@@ -8,20 +8,43 @@
 // Docs contiendra la doc pour pouvoir faire fonctionner les routes
 // Models instaure le format des données pour écrire dans la BDD
 
+
 // Importer express
 const express = require("express");
+
 
 // Permet de créer une application express
 const app = express();
 
+
 // Importer la BDD du fichier database
 const mongoose = require("./database/database");
 
+
+// On veut transformer le corps (body) de la requete en json
+// On installe body-parser APRES EXPRESS
+// On importe BP
+const bodyParser = require('body-parser');
+
+
 // On utilise app.use pour toutes les routes, la méthode prend en paramètre "req(requete), res(response), next(fonction pour passer au middleware suivant)"
+// Req : Contenu de ce qu'envoi le navigateur/client au server
+// Res : Réponse du server à la Req du client
+// Next : Fonction pour passer au middleware suivant
+
+
+// On gère le CORS (on peut avoir des bug si le FE est sur un server et le BE sur un autre, le cas pour ce projet)
+// Avec ce code on accepte toutes les requetes de différents server sur notre API
 app.use((req, res, next)=>{
-    res.status(202);
-    res.json({message: 'Coucou !'});
+    res.setHeader("Access-Control-Allow-Origin", "*"); // Les requetes d'autres server peuvent venir
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    next(); // On passe au prochain middleware
 });
+
+
+// On transforme le body en json
+app.use(bodyParser.json());
 
 
 // On exporte cette app pour pouvoir y accéder de partout
